@@ -1,3 +1,17 @@
+function isValidInput(playerSelection) {
+    if (playerSelection !== 'rock' &&
+            playerSelection !== 'paper' &&
+            playerSelection !== 'scissors') {
+        return 0;
+    }
+    return 1;
+}
+
+function capitalize(string) {
+    let newString = string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
+    return newString;
+}
+
 function computerPlay() {
     let randomNumber = Math.floor(Math.random() * 3);
     let computerSelection;
@@ -15,51 +29,55 @@ function computerPlay() {
     return computerSelection;
 }
 
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection === 'rock' && computerSelection === 'scissors' || 
-    playerSelection === 'paper' && computerSelection === 'rock' ||
-    playerSelection === 'scissors' && computerSelection === 'paper') 
-    {
-        return ('You Win! ' + playerSelection + ' beats ' + computerSelection);
+function returnRoundWinner(playerSelection, computerSelection) {
+    if (playerSelection === computerSelection) {
+        return 'draw';
     }
-    else if (playerSelection === 'scissors' && computerSelection === 'rock' || 
-    playerSelection === 'rock' && computerSelection === 'paper' ||
-    playerSelection === 'paper' && computerSelection === 'scissors') 
-    {
-        return ('You Lose! ' + computerSelection + ' beats ' + playerSelection);
+    else if (playerSelection === 'rock' && computerSelection === 'scissors' || 
+            playerSelection === 'paper' && computerSelection === 'rock' ||
+            playerSelection === 'scissors' && computerSelection === 'paper') {
+        return 'player';
     }
     else {
-        return ('It\'s a draw! You both picked ' + computerSelection);
+        return 'computer';
+    }
+}
+
+function playRound() {
+    let computerSelection = computerPlay();
+    let playerSelection = prompt('Make a choice: Rock, Paper or Scissors: ').toLowerCase();
+    while(!isValidInput(playerSelection)) {
+        playerSelection = prompt('Invalid Selection. Choose again (Rock, Paper or Scissors):' ).toLowerCase();
+    }
+    let roundWinner = returnRoundWinner(playerSelection, computerSelection);
+    if (roundWinner === 'player') {
+        playerScore++;
+        console.log(`Round Won! ${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`);
+    }
+    else if (roundWinner === 'computer') {
+        computerScore++;
+        console.log(`Round Lost! ${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`);
+    }
+    else {
+        console.log(`It's a draw! You both picked ${capitalize(computerSelection)}. Round restarted.`);
+        playRound();
     }
 }
 
 function game() {
-    let playerScore = 0;
-    let computerScore = 0;
     for (let i = 1; i <= 5; i++) {
-        let playerSelection = prompt('Make a choice: Rock, Paper or Scissors: ').toLowerCase();
-        while(playerSelection !== 'rock' && playerSelection !== 'paper' && playerSelection !== 'scissors') {
-            playerSelection = prompt('Invalid Selection. Choose again (Rock, Paper or Scissors):' ).toLowerCase();
-        }
-        let winnerMessage = playRound(playerSelection.toLowerCase(), computerPlay());
-        if(winnerMessage.charAt(4) === 'W') {
-            playerScore++;
-        }
-        else if(winnerMessage.charAt(4) === 'L') {
-            computerScore++;
-        }
-        console.log('Round ' + i + ': ' + winnerMessage);
-        console.log('Current score: Player ' + playerScore + ':' + computerScore + ' Computer');
+        console.log(`Round ${i}:`)
+        playRound();
+        console.log(`Current score: Player ${playerScore} : ${computerScore}`)
     }
     if (playerScore > computerScore) {
-        console.log('You win! ' + playerScore + ' to ' + computerScore);
-    }
-    else if(playerScore < computerScore) {
-        console.log('You lose! ' + playerScore + ' to ' + computerScore);
+        console.log(`You won the game! ${playerScore} to ${computerScore}`);
     }
     else {
-        console.log('It\'s a draw! Final result: ' + playerScore + ' to ' + computerScore);
+        console.log(`You lost the game! ${playerScore} to ${computerScore}`);
     }
 }
 
+let playerScore = 0;
+let computerScore = 0;
 game();
