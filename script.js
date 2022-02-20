@@ -1,8 +1,3 @@
-function capitalize(string) {
-    let newString = string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
-    return newString;
-}
-
 function computerPlay() {
     let randomNumber = Math.floor(Math.random() * 3);
     let computerSelection;
@@ -18,6 +13,31 @@ function computerPlay() {
             break;
     }
     return computerSelection;
+}
+
+function updateImages(playerSelection, computerSelection) {
+    switch(playerSelection) {
+        case 'rock':
+            playerImg.setAttribute('src', './images/rock.png');
+            break;
+        case 'paper':
+            playerImg.setAttribute('src', './images/paper.png');
+            break;
+        case 'scissors':
+            playerImg.setAttribute('src', './images/scissors.png');
+            break;
+    }
+    switch(computerSelection) {
+        case 'rock':
+            computerImg.setAttribute('src', './images/rock.png');
+            break;
+        case 'paper':
+            computerImg.setAttribute('src', './images/paper.png');
+            break;
+        case 'scissors':
+            computerImg.setAttribute('src', './images/scissors.png');
+            break;
+    }
 }
 
 function returnRoundWinner(playerSelection, computerSelection) {
@@ -38,32 +58,35 @@ function playRound() {
     let computerSelection = computerPlay();
     let playerSelection = this.className;
     let roundWinner = returnRoundWinner(playerSelection, computerSelection);
+    updateImages(playerSelection, computerSelection);
     if (roundWinner === 'player') {
         playerScore++;
-        roundWin.textContent = `Round Won! ${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`;
+        roundWin.textContent = `Round Won!`;
+        playerSco.textContent = playerScore;
     }
     else if (roundWinner === 'computer') {
         computerScore++;
-        roundWin.textContent = `Round Lost! ${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`;
+        roundWin.textContent = `Round Lost`;
+        computerSco.textContent = computerScore;
     }
     else {
-        roundWin.textContent =`It's a draw! You both picked ${capitalize(computerSelection)}. Round restarted.`;
+        roundWin.textContent =`It's a draw!`;
     }
-    scoreBoard.textContent = `Player ${playerScore} : ${computerScore} Computer`;
     if (playerScore === 3 || computerScore === 3) {
         buttons.forEach(button => button.removeEventListener('click', playRound));
         showWinner();
-        body.appendChild(playAgain, gameWin);
+        container.appendChild(playAgain, gameWin);
     }
 }
 
 function newRound () {
     playerScore = 0;
     computerScore = 0;
-    scoreBoard.textContent = 'Player 0 : 0 Computer';
+    playerSco.textContent = 0;
+    computerSco.textContent = 0;
     gameWin.textContent = '';
     roundWin.textContent = '';
-    body.removeChild(playAgain);
+    container.removeChild(playAgain);
     buttons.forEach(button => button.addEventListener('click', playRound));
 }
 
@@ -72,19 +95,26 @@ function showWinner() {
         gameWin.textContent = `You won the game!`;
     }
     else {
-        gameWin.textContent = `You lost the game!`;
+        gameWin.textContent = `You lost the game`;
     }
 }
 
 let playerScore = 0;
 let computerScore = 0;
+
+const container = document.querySelector('.container');
+const playerSco = document.querySelector('.player-score');
+const computerSco = document.querySelector('.computer-score');
+const roundWin = document.querySelector('.roundwin');
+const gameWin = document.querySelector('.gamewin');
+const playAgain = document.createElement('button');
 const btn = document.querySelectorAll('button');
 const buttons = [...btn];
+const playerImg = document.querySelector('.selected .player');
+const computerImg = document.querySelector('.selected .computer');
+
 buttons.forEach(button => button.addEventListener('click', playRound));
-const scoreBoard = document.querySelector('.scoreboard');
-const body = document.querySelector('body');
-const gameWin = document.querySelector('.gamewin');
-const roundWin = document.querySelector('.roundwin');
-const playAgain = document.createElement('button');
-playAgain.textContent = 'Play again';
 playAgain.addEventListener('click', newRound);
+playAgain.textContent = 'Play again';
+
+playAgain.classList.add('play-again');
