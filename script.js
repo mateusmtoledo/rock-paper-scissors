@@ -1,12 +1,3 @@
-function isValidInput(playerSelection) {
-    if (playerSelection !== 'rock' &&
-            playerSelection !== 'paper' &&
-            playerSelection !== 'scissors') {
-        return 0;
-    }
-    return 1;
-}
-
 function capitalize(string) {
     let newString = string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
     return newString;
@@ -45,39 +36,55 @@ function returnRoundWinner(playerSelection, computerSelection) {
 
 function playRound() {
     let computerSelection = computerPlay();
-    let playerSelection = prompt('Make a choice: Rock, Paper or Scissors: ').toLowerCase();
-    while(!isValidInput(playerSelection)) {
-        playerSelection = prompt('Invalid Selection. Choose again (Rock, Paper or Scissors):' ).toLowerCase();
-    }
+    let playerSelection = this.className;
     let roundWinner = returnRoundWinner(playerSelection, computerSelection);
     if (roundWinner === 'player') {
         playerScore++;
-        console.log(`Round Won! ${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`);
+        roundWin.textContent = `Round Won! ${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`;
     }
     else if (roundWinner === 'computer') {
         computerScore++;
-        console.log(`Round Lost! ${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`);
+        roundWin.textContent = `Round Lost! ${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`;
     }
     else {
-        console.log(`It's a draw! You both picked ${capitalize(computerSelection)}. Round restarted.`);
-        playRound();
+        roundWin.textContent =`It's a draw! You both picked ${capitalize(computerSelection)}. Round restarted.`;
+    }
+    scoreBoard.textContent = `Player ${playerScore} : ${computerScore} Computer`;
+    if (playerScore === 3 || computerScore === 3) {
+        buttons.forEach(button => button.removeEventListener('click', playRound));
+        showWinner();
+        body.appendChild(playAgain, gameWin);
     }
 }
 
-function game() {
-    for (let i = 1; i <= 5; i++) {
-        console.log(`Round ${i}:`)
-        playRound();
-        console.log(`Current score: Player ${playerScore} : ${computerScore}`)
-    }
+function newRound () {
+    playerScore = 0;
+    computerScore = 0;
+    scoreBoard.textContent = 'Player 0 : 0 Computer';
+    gameWin.textContent = '';
+    roundWin.textContent = '';
+    body.removeChild(playAgain);
+    buttons.forEach(button => button.addEventListener('click', playRound));
+}
+
+function showWinner() {
     if (playerScore > computerScore) {
-        console.log(`You won the game! ${playerScore} to ${computerScore}`);
+        gameWin.textContent = `You won the game!`;
     }
     else {
-        console.log(`You lost the game! ${playerScore} to ${computerScore}`);
+        gameWin.textContent = `You lost the game!`;
     }
 }
 
 let playerScore = 0;
 let computerScore = 0;
-game();
+const btn = document.querySelectorAll('button');
+const buttons = [...btn];
+buttons.forEach(button => button.addEventListener('click', playRound));
+const scoreBoard = document.querySelector('.scoreboard');
+const body = document.querySelector('body');
+const gameWin = document.querySelector('.gamewin');
+const roundWin = document.querySelector('.roundwin');
+const playAgain = document.createElement('button');
+playAgain.textContent = 'Play again';
+playAgain.addEventListener('click', newRound);
