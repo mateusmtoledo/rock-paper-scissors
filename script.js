@@ -88,6 +88,8 @@ function newRound () {
     roundWin.textContent = '';
     container.removeChild(playAgain);
     buttons.forEach(button => button.addEventListener('click', playRound));
+    playerImg.setAttribute('src', './images/rock.png');
+    computerImg.setAttribute('src', './images/rock.png');
 }
 
 function showWinner() {
